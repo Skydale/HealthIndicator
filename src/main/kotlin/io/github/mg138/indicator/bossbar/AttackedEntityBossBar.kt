@@ -49,7 +49,7 @@ object AttackedEntityBossBar {
     private fun damagesToString(damages: Map<StatType, Double>): Text {
         val text = LiteralText(" ")
 
-        val sorted = damages.entries.sortedBy { it.value }
+        val sorted = damages.entries.sortedByDescending{ it.value }
 
         var sum = 0.0
         val icons = LiteralText(" ")
