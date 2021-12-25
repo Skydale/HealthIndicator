@@ -26,11 +26,12 @@ object AttackedEntityBossBar {
         }
         ServerTickEvents.END_SERVER_TICK.register {
             map.forEach { (player, triple) ->
-                if (abs(triple.first.age - triple.third) > 60) {
+                if (triple.third > 60) {
                     triple.second.clearPlayers()
                     map.remove(player)
                 }
             }
+            map.mapValues { it.value.third + 1 }
         }
     }
 
@@ -58,7 +59,6 @@ object AttackedEntityBossBar {
         val old = map[player]
         val percentage = damagee.health / damagee.maxHealth
         val name = damagee.displayName.copy().append(damagesToString(damages))
-        val time = damagee.age
 
         val bossBar: ServerBossBar
         if (old == null) {
@@ -71,6 +71,6 @@ object AttackedEntityBossBar {
             bossBar.name = name
         }
         bossBar.percent = percentage
-        map[player] = Triple(damagee, bossBar, time)
+        map[player] = Triple(damagee, bossBar, 0)
     }
 }
