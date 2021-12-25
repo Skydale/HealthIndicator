@@ -2,6 +2,7 @@ package io.github.mg138.indicator.bossbar
 
 import io.github.mg138.bookshelf.damage.DamageEvent
 import io.github.mg138.bookshelf.stat.stat.Stat
+import io.github.mg138.bookshelf.stat.stat.StatSingle
 import io.github.mg138.bookshelf.stat.type.StatType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.entity.LivingEntity
@@ -46,17 +47,20 @@ object AttackedEntityBossBar {
     }
 
     private fun damagesToString(damages: Map<StatType, Double>): Text {
-        val text = LiteralText(" (")
-        var sum = 0.0
-        damages.entries.forEach {
-            sum += it.value
+        val text = LiteralText(" ")
 
-            text.append(it.key.icon)
-            if (it == damages.entries.last()) {
-                val sumText = sum.roundToLong().toString()
-                text.append(" $sumText)")
-            }
+        val sorted = damages.entries.sortedBy { it.value }
+
+        var sum = 0.0
+        val icons = LiteralText(" ")
+        sorted.forEach { (type, damage) ->
+            sum += damage
+            icons.append(type.icon).append(" ")
         }
+
+        val sumText = sorted.first().key.indicator(StatSingle(sum))
+        text.append(sumText).append(icons)
+
         return text
     }
 
