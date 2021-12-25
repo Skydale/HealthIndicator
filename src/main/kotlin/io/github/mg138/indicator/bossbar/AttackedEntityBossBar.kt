@@ -54,7 +54,7 @@ object AttackedEntityBossBar {
             text.append(it.key.icon)
             if (it == damages.entries.last()) {
                 val sumText = sum.roundToLong().toString()
-                text.append("，$sumText)")
+                text.append(" $sumText)")
             }
         }
         return text
