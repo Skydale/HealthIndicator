@@ -11,10 +11,13 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import kotlin.jvm.internal.Ref
 import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 object AttackedEntityBossBar {
-    private val map: MutableMap<ServerPlayerEntity, Triple<LivingEntity, ServerBossBar, Int>> = mutableMapOf()
+    private val map: MutableMap<ServerPlayerEntity, Triple<LivingEntity, ServerBossBar, Ref.IntRef>> = mutableMapOf()
 
     fun register() {
         DamageEvent.AFTER_BOOK_DAMAGE.register { event ->
@@ -26,12 +29,13 @@ object AttackedEntityBossBar {
         }
         ServerTickEvents.END_SERVER_TICK.register {
             map.forEach { (player, triple) ->
-                if (triple.third > 60) {
+                val age = triple.third.apply { element++ }
+
+                if (age.element >= 60) {
                     triple.second.clearPlayers()
                     map.remove(player)
                 }
             }
-            map.mapValues { it.value.third + 1 }
         }
     }
 
@@ -41,21 +45,22 @@ object AttackedEntityBossBar {
         return BossBar.Color.RED
     }
 
-    private fun damagesToString(damages: Map<StatType, Stat>): Text {
-        val text = LiteralText("(")
+    private fun damagesToString(damages: Map<StatType, Double>): Text {
+        val text = LiteralText(" (")
+        var sum = 0.0
         damages.entries.forEach {
-            text.append(it.key.indicator(it.value))
+            sum += it.value
 
-            if (it != damages.entries.last()) {
-                text.append(" ")
-            } else {
-                text.append(")")
+            text.append(it.key.icon)
+            if (it == damages.entries.last()) {
+                val sumText = sum.roundToLong().toString()
+                text.append("，$sumText)")
             }
         }
         return text
     }
 
-    private fun show(player: ServerPlayerEntity, damagee: LivingEntity, damages: Map<StatType, Stat>) {
+    private fun show(player: ServerPlayerEntity, damagee: LivingEntity, damages: Map<StatType, Double>) {
         val old = map[player]
         val percentage = damagee.health / damagee.maxHealth
         val name = damagee.displayName.copy().append(damagesToString(damages))
@@ -71,6 +76,6 @@ object AttackedEntityBossBar {
             bossBar.name = name
         }
         bossBar.percent = percentage
-        map[player] = Triple(damagee, bossBar, 0)
+        map[player] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
     }
 }
