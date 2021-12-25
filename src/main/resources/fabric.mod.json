@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "health_indicator",
+  "version": "${version}",
+  "name": "Health Indicator",
+  "description": "Indicates the health and damage dealt to an entity.",
+  "authors": [
+    "Mu_guang_138"
+  ],
+  "contact": {
+    "homepage": "https://example.com/",
+    "issues": "https://example.com/",
+    "sources": "https://example.com/"
+  },
+  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.mg138.indicator.Main"
+      }
+    ]
+  },
+  "mixins": [
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.5",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.7.0+kotlin.1.6.0",
+    "minecraft": "1.18.x",
+    "java": ">=16",
+    "polymer": "0.2.0-beta.12+1.18.1",
+    "pony_bookshelf": "1.0.0"
+  }
+}
