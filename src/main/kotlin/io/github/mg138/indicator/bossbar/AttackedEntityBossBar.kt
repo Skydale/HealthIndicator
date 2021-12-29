@@ -79,7 +79,7 @@ object AttackedEntityBossBar {
 
         val bossBar: ServerBossBar
         if (old == null) {
-            bossBar = ServerBossBar(name, color(percentage), BossBar.Style.NOTCHED_10).apply {
+            bossBar = ServerBossBar(name, color(percentage), BossBar.Style.PROGRESS).apply {
                 addPlayer(player)
             }
         } else {
