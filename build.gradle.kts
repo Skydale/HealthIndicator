@@ -42,9 +42,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     val polymerVersion: String by project
-    modApi("eu.pb4:polymer:$polymerVersion") {
-        exclude("net.fabricmc.fabric-api")
-    }
+    modImplementation("eu.pb4:polymer:$polymerVersion")
 
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }

@@ -29,13 +29,19 @@ object AttackedEntityBossBar {
             ActionResult.PASS
         }
         ServerTickEvents.END_SERVER_TICK.register {
+            val toRemove: MutableList<ServerPlayerEntity> = mutableListOf()
+
             map.forEach { (player, triple) ->
                 val age = triple.third.apply { element++ }
 
                 if (age.element >= 60) {
                     triple.second.clearPlayers()
-                    map.remove(player)
+                    toRemove += player
                 }
+            }
+
+            toRemove.forEach {
+                map.remove(it)
             }
         }
     }
@@ -47,9 +53,11 @@ object AttackedEntityBossBar {
     }
 
     private fun damagesToString(damages: Map<StatType, Double>): Text {
+        if (damages.isEmpty()) return LiteralText.EMPTY
+
         val text = LiteralText(" ")
 
-        val sorted = damages.entries.sortedByDescending{ it.value }
+        val sorted = damages.entries.sortedByDescending { it.value }
 
         var sum = 0.0
         val icons = LiteralText(" ")
