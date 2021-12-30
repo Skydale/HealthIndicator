@@ -12,13 +12,14 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import java.util.*
 import kotlin.jvm.internal.Ref
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 object AttackedEntityBossBar {
-    private val map: MutableMap<ServerPlayerEntity, Triple<LivingEntity, ServerBossBar, Ref.IntRef>> = mutableMapOf()
+    private val map: MutableMap<UUID, Triple<LivingEntity, ServerBossBar, Ref.IntRef>> = mutableMapOf()
 
     fun register() {
         DamageEvent.AFTER_BOOK_DAMAGE.register { event ->
@@ -29,14 +30,14 @@ object AttackedEntityBossBar {
             ActionResult.PASS
         }
         ServerTickEvents.END_SERVER_TICK.register {
-            val toRemove: MutableList<ServerPlayerEntity> = mutableListOf()
+            val toRemove: MutableList<UUID> = mutableListOf()
 
-            map.forEach { (player, triple) ->
+            map.forEach { (uuid, triple) ->
                 val age = triple.third.apply { element++ }
 
                 if (age.element >= 60) {
                     triple.second.clearPlayers()
-                    toRemove += player
+                    toRemove += uuid
                 }
             }
 
@@ -73,7 +74,7 @@ object AttackedEntityBossBar {
     }
 
     private fun show(player: ServerPlayerEntity, damagee: LivingEntity, damages: Map<StatType, Double>) {
-        val old = map[player]
+        val old = map[player.uuid]
         val percentage = damagee.health / damagee.maxHealth
         val name = damagee.displayName.copy().append(damagesToString(damages))
 
@@ -88,6 +89,6 @@ object AttackedEntityBossBar {
             bossBar.name = name
         }
         bossBar.percent = percentage
-        map[player] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
+        map[player.uuid] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
     }
 }
