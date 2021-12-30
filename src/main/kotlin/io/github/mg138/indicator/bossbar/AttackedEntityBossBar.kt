@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.entity.boss.ServerBossBar
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
@@ -74,7 +75,8 @@ object AttackedEntityBossBar {
     }
 
     private fun show(player: ServerPlayerEntity, damagee: LivingEntity, damages: Map<StatType, Double>) {
-        val old = map[player.gameProfile.id]
+        val uuid = PlayerEntity.getUuidFromProfile(player.gameProfile)
+        val old = map[uuid]
         val percentage = damagee.health / damagee.maxHealth
         val name = damagee.displayName.copy().append(damagesToString(damages))
 
@@ -89,6 +91,6 @@ object AttackedEntityBossBar {
             bossBar.name = name
         }
         bossBar.percent = percentage
-        map[player.gameProfile.id] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
+        map[uuid] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
     }
 }
