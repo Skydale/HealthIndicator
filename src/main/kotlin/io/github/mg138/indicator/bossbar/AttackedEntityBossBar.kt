@@ -5,6 +5,7 @@ import io.github.mg138.bookshelf.stat.stat.Stat
 import io.github.mg138.bookshelf.stat.stat.StatSingle
 import io.github.mg138.bookshelf.stat.type.StatType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.boss.BossBar
 import net.minecraft.entity.boss.ServerBossBar
@@ -45,6 +46,9 @@ object AttackedEntityBossBar {
             toRemove.forEach {
                 map.remove(it)
             }
+        }
+        ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
+            map.remove(PlayerEntity.getUuidFromProfile(handler.player.gameProfile))
         }
     }
 
