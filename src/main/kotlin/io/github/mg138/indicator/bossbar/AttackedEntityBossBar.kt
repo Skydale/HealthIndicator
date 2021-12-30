@@ -48,7 +48,7 @@ object AttackedEntityBossBar {
             }
         }
         ServerPlayConnectionEvents.DISCONNECT.register { handler, _ ->
-            map.remove(PlayerEntity.getUuidFromProfile(handler.player.gameProfile))
+            map.remove(handler.player.uuid)
         }
     }
 
@@ -79,7 +79,7 @@ object AttackedEntityBossBar {
     }
 
     private fun show(player: ServerPlayerEntity, damagee: LivingEntity, damages: Map<StatType, Double>) {
-        val uuid = PlayerEntity.getUuidFromProfile(player.gameProfile)
+        val uuid = player.uuid
         val old = map[uuid]
         val percentage = damagee.health / damagee.maxHealth
         val name = damagee.displayName.copy().append(damagesToString(damages))
