@@ -74,7 +74,7 @@ object AttackedEntityBossBar {
     }
 
     private fun show(player: ServerPlayerEntity, damagee: LivingEntity, damages: Map<StatType, Double>) {
-        val old = map[player.uuid]
+        val old = map[player.gameProfile.id]
         val percentage = damagee.health / damagee.maxHealth
         val name = damagee.displayName.copy().append(damagesToString(damages))
 
@@ -89,6 +89,6 @@ object AttackedEntityBossBar {
             bossBar.name = name
         }
         bossBar.percent = percentage
-        map[player.uuid] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
+        map[player.gameProfile.id] = Triple(damagee, bossBar, Ref.IntRef().apply { element = 0 })
     }
 }
