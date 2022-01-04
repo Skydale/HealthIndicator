@@ -69,7 +69,7 @@ object AttackedEntityBossBar {
         val icons = LiteralText(" ")
         sorted.forEach { (type, damage) ->
             sum += damage
-            icons.append(type.icon).append(" ")
+            icons.append(type.icon()).append(" ")
         }
 
         val sumText = sorted.first().key.indicator(StatSingle(sum))
